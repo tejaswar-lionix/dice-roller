@@ -34,5 +34,22 @@ class DiceTests(unittest.TestCase):
         self.assertEqual(result["total"], 8)
 
 
+class RollManyTests(unittest.TestCase):
+    def test_roll_many_statistics(self):
+        from dice import roll_many
+
+        result = roll_many("1d6", 3, FixedRng([2, 6, 4]))
+        self.assertEqual(result["totals"], [2, 6, 4])
+        self.assertEqual(result["minimum"], 2)
+        self.assertEqual(result["maximum"], 6)
+        self.assertEqual(result["average"], 4.0)
+
+    def test_roll_many_validates_times(self):
+        from dice import roll_many
+
+        with self.assertRaises(ValueError):
+            roll_many("1d6", 0)
+
+
 if __name__ == "__main__":
     unittest.main()
