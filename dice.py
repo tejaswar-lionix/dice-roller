@@ -33,3 +33,17 @@ def roll(expression, rng=None):
         "modifier": modifier,
         "total": sum(rolls) + modifier,
     }
+
+
+def roll_many(expression, times, rng=None):
+    """Roll an expression repeatedly and return totals plus simple statistics."""
+    if times < 1:
+        raise ValueError("times must be at least 1")
+    rng = rng or random.Random()
+    totals = [roll(expression, rng)["total"] for _ in range(times)]
+    return {
+        "totals": totals,
+        "minimum": min(totals),
+        "maximum": max(totals),
+        "average": round(sum(totals) / len(totals), 2),
+    }
