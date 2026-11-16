@@ -89,6 +89,16 @@ def roll_disadvantage(sides=20, rng=None):
     return _roll_advantage(sides, rng, min)
 
 
+def sum_rolls(expressions, rng=None):
+    """Roll each expression with the same rng and sum the totals."""
+    items = list(expressions)
+    if not items:
+        raise ValueError("expressions must not be empty")
+    rng = rng or random.Random()
+    totals = [roll(expression, rng)["total"] for expression in items]
+    return {"totals": totals, "total": sum(totals)}
+
+
 def roll_many(expression, times, rng=None):
     """Roll an expression repeatedly and return totals plus simple statistics."""
     if times < 1:
