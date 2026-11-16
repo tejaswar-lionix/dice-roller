@@ -90,6 +90,27 @@ class AdvantageTests(unittest.TestCase):
                 roll_disadvantage(sides)
 
 
+class SumRollsTests(unittest.TestCase):
+    def test_multiple_expressions(self):
+        from dice import sum_rolls
+
+        result = sum_rolls(["1d6", "2d6+3"], FixedRng([4, 2, 5]))
+        self.assertEqual(result["totals"], [4, 10])
+        self.assertEqual(result["total"], 14)
+
+    def test_total_equals_sum_of_totals(self):
+        from dice import sum_rolls
+
+        result = sum_rolls(["1d6", "1d6", "1d6"], FixedRng([1, 2, 6]))
+        self.assertEqual(result["total"], sum(result["totals"]))
+
+    def test_empty_raises(self):
+        from dice import sum_rolls
+
+        with self.assertRaises(ValueError):
+            sum_rolls([])
+
+
 class RollManyTests(unittest.TestCase):
     def test_roll_many_statistics(self):
         from dice import roll_many
