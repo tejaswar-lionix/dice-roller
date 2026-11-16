@@ -70,6 +70,25 @@ def roll(expression, rng=None):
     }
 
 
+def _roll_advantage(sides, rng, choose):
+    if not 2 <= sides <= 1000:
+        raise ValueError("sides must be between 2 and 1000")
+    rng = rng or random.Random()
+    rolls = [rng.randint(1, sides) for _ in range(2)]
+    kept = choose(rolls)
+    return {"rolls": rolls, "kept": kept, "total": kept}
+
+
+def roll_advantage(sides=20, rng=None):
+    """Roll two dice and keep the higher result."""
+    return _roll_advantage(sides, rng, max)
+
+
+def roll_disadvantage(sides=20, rng=None):
+    """Roll two dice and keep the lower result."""
+    return _roll_advantage(sides, rng, min)
+
+
 def roll_many(expression, times, rng=None):
     """Roll an expression repeatedly and return totals plus simple statistics."""
     if times < 1:
