@@ -1,6 +1,6 @@
 import unittest
 
-from dice import parse, roll
+from dice import parse, parse_keep, roll
 
 
 class FixedRng:
@@ -32,6 +32,35 @@ class DiceTests(unittest.TestCase):
     def test_roll_respects_sides(self):
         result = roll("3d4", FixedRng([1, 4, 3]))
         self.assertEqual(result["total"], 8)
+
+
+class KeepDropTests(unittest.TestCase):
+    def test_parse_keep(self):
+        self.assertEqual(parse_keep("4d6kh3"), (4, 6, 0, "kh", 3))
+        self.assertEqual(parse_keep("4d6kl1+2"), (4, 6, 2, "kl", 1))
+
+    def test_parse_keep_returns_none_for_normal_expressions(self):
+        self.assertIsNone(parse_keep("2d6+3"))
+
+    def test_parse_keep_rejects_out_of_range(self):
+        for expression in ("4d6kh0", "4d6kh5", "4d6kl0", "101d6kh1"):
+            with self.assertRaises(ValueError):
+                parse_keep(expression)
+
+    def test_roll_keeps_highest_dice(self):
+        result = roll("4d6kh3", FixedRng([2, 6, 3, 5]))
+        self.assertEqual(result["rolls"], [2, 6, 3, 5])
+        self.assertEqual(result["kept"], [6, 5, 3])
+        self.assertEqual(result["total"], 14)
+
+    def test_roll_keeps_lowest_die(self):
+        result = roll("4d6kl1+2", FixedRng([2, 6, 3, 5]))
+        self.assertEqual(result["kept"], [2])
+        self.assertEqual(result["total"], 4)
+
+    def test_normal_roll_has_no_kept_key(self):
+        result = roll("2d6+3", FixedRng([2, 5]))
+        self.assertNotIn("kept", result)
 
 
 class RollManyTests(unittest.TestCase):
