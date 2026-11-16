@@ -7,6 +7,10 @@ PATTERN = re.compile(
     r"^(?P<count>\d*)d(?P<sides>\d+)(?P<modifier>[+-]\d+)?$",
     re.IGNORECASE,
 )
+KEEP_PATTERN = re.compile(
+    r"^(?P<count>\d*)d(?P<sides>\d+)(?P<mode>kh|kl)(?P<keep>\d+)(?P<modifier>[+-]\d+)?$",
+    re.IGNORECASE,
+)
 
 
 def parse(expression):
@@ -23,8 +27,39 @@ def parse(expression):
     return count, sides, modifier
 
 
+def parse_keep(expression):
+    match = KEEP_PATTERN.match(expression.strip())
+    if not match:
+        return None
+    count = int(match.group("count") or 1)
+    sides = int(match.group("sides"))
+    modifier = int(match.group("modifier") or 0)
+    mode = match.group("mode").lower()
+    keep_count = int(match.group("keep"))
+    if not 1 <= count <= 100:
+        raise ValueError("count must be between 1 and 100")
+    if not 2 <= sides <= 1000:
+        raise ValueError("sides must be between 2 and 1000")
+    if not 1 <= keep_count <= count:
+        raise ValueError("keep count must be between 1 and count")
+    return count, sides, modifier, mode, keep_count
+
+
 def roll(expression, rng=None):
     rng = rng or random.Random()
+    keep = parse_keep(expression)
+    if keep:
+        count, sides, modifier, mode, keep_count = keep
+        rolls = [rng.randint(1, sides) for _ in range(count)]
+        ordered = sorted(rolls, reverse=(mode == "kh"))
+        kept = ordered[:keep_count]
+        return {
+            "expression": expression,
+            "rolls": rolls,
+            "modifier": modifier,
+            "total": sum(kept) + modifier,
+            "kept": kept,
+        }
     count, sides, modifier = parse(expression)
     rolls = [rng.randint(1, sides) for _ in range(count)]
     return {
