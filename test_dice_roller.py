@@ -63,6 +63,33 @@ class KeepDropTests(unittest.TestCase):
         self.assertNotIn("kept", result)
 
 
+class AdvantageTests(unittest.TestCase):
+    def test_roll_advantage_keeps_highest(self):
+        from dice import roll_advantage
+
+        result = roll_advantage(20, FixedRng([5, 17]))
+        self.assertEqual(result["rolls"], [5, 17])
+        self.assertEqual(result["kept"], 17)
+        self.assertEqual(result["total"], 17)
+
+    def test_roll_disadvantage_keeps_lowest(self):
+        from dice import roll_disadvantage
+
+        result = roll_disadvantage(20, FixedRng([5, 17]))
+        self.assertEqual(result["rolls"], [5, 17])
+        self.assertEqual(result["kept"], 5)
+        self.assertEqual(result["total"], 5)
+
+    def test_advantage_validates_sides(self):
+        from dice import roll_advantage, roll_disadvantage
+
+        for sides in (1, 1001):
+            with self.assertRaises(ValueError):
+                roll_advantage(sides)
+            with self.assertRaises(ValueError):
+                roll_disadvantage(sides)
+
+
 class RollManyTests(unittest.TestCase):
     def test_roll_many_statistics(self):
         from dice import roll_many
