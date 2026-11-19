@@ -34,6 +34,23 @@ class DiceTests(unittest.TestCase):
         self.assertEqual(result["total"], 8)
 
 
+class MinMaxTests(unittest.TestCase):
+    def test_single_die(self):
+        from dice import min_max
+
+        self.assertEqual(min_max("d6"), {"min": 1, "max": 6})
+
+    def test_multiple_dice_with_modifier(self):
+        from dice import min_max
+
+        self.assertEqual(min_max("2d20+3"), {"min": 5, "max": 43})
+
+    def test_negative_modifier(self):
+        from dice import min_max
+
+        self.assertEqual(min_max("1d8-1"), {"min": 0, "max": 7})
+
+
 class KeepDropTests(unittest.TestCase):
     def test_parse_keep(self):
         self.assertEqual(parse_keep("4d6kh3"), (4, 6, 0, "kh", 3))

@@ -45,6 +45,14 @@ def parse_keep(expression):
     return count, sides, modifier, mode, keep_count
 
 
+def min_max(expression):
+    count, sides, modifier = parse(expression)
+    return {
+        "min": count * 1 + modifier,
+        "max": count * sides + modifier,
+    }
+
+
 def roll(expression, rng=None):
     rng = rng or random.Random()
     keep = parse_keep(expression)
