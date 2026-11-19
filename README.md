@@ -9,6 +9,7 @@ python3 -c "from dice import roll; print(roll('2d6+3'))"
 python3 -c "from dice import roll; print(roll('4d6kh3'))"
 python3 -c "from dice import roll_advantage; print(roll_advantage(20))"
 python3 -c "from dice import sum_rolls; print(sum_rolls(['2d6+3', '1d8']))"
+python3 -c "from dice import min_max; print(min_max('2d20+3'))"
 ```
 
 ## Features
@@ -19,6 +20,7 @@ python3 -c "from dice import sum_rolls; print(sum_rolls(['2d6+3', '1d8']))"
 - Advantage/disadvantage with roll_advantage(sides, rng) and roll_disadvantage(sides, rng)
 - Batch statistics with roll_many(expression, times, rng)
 - Sum several expressions at once with sum_rolls(expressions, rng)
+- Minimum and maximum totals with min_max(expression)
 
 ## Tests
 
