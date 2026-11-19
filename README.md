@@ -28,6 +28,10 @@ python3 -c "from dice import min_max; print(min_max('2d20+3'))"
 python3 -m unittest -q
 ```
 
+## Additional API
+
+- `expected_value(expression)` returns the statistical mean total for a dice expression.
+
 ## License
 
 MIT

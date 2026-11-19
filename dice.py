@@ -119,3 +119,9 @@ def roll_many(expression, times, rng=None):
         "maximum": max(totals),
         "average": round(sum(totals) / len(totals), 2),
     }
+
+
+def expected_value(expression):
+    """Return the statistical mean total for a dice expression."""
+    count, sides, modifier = parse(expression)
+    return round(count * (sides + 1) / 2 + modifier, 2)

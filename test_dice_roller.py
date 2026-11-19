@@ -145,5 +145,23 @@ class RollManyTests(unittest.TestCase):
             roll_many("1d6", 0)
 
 
+class ExpectedValueTests(unittest.TestCase):
+    def test_mean_for_single_die(self):
+        from dice import expected_value
+
+        self.assertEqual(expected_value("1d20"), 10.5)
+
+    def test_mean_includes_modifier(self):
+        from dice import expected_value
+
+        self.assertEqual(expected_value("2d6+3"), 10.0)
+
+    def test_rejects_invalid_expression(self):
+        from dice import expected_value
+
+        with self.assertRaises(ValueError):
+            expected_value("nope")
+
+
 if __name__ == "__main__":
     unittest.main()
